@@ -1,10 +1,14 @@
 <?php
 
-enum NyzoStringType {
-    case Micropay;
-    case PrefilledData;
-    case PrivateSeed;
-    case PublicIdentifier;
-    case Signature;
-    case Transaction;
+enum NyzoStringType: string {
+    case Micropay = 'pay_';
+    case PrefilledData = 'pre_';
+    case PrivateSeed = 'key_';
+    case PublicIdentifier = 'id__';
+    case Signature = 'sig_';
+    case Transaction = 'tx__';
+
+    public function getPrefix() {
+        return $this->value;
+    }
 }
