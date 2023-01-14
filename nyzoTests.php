@@ -1,6 +1,7 @@
 <?php
 
 define('__ROOT__', dirname(__FILE__));
+require_once(__ROOT__ . '/lib/nyzoStringEncoder.php');
 require_once(__ROOT__ . '/lib/nyzoStringType.php');
 
 function runTests() {
@@ -9,6 +10,9 @@ function runTests() {
     echo '*****************' . PHP_EOL . PHP_EOL;
 
     displayNyzoStringTypeValues();
+    displayNyzoStringEncoderValues();
+
+    echo PHP_EOL;
 }
 
 function displayNyzoStringTypeValues() {
@@ -18,6 +22,14 @@ function displayNyzoStringTypeValues() {
         echo '- ' . $nyzoStringType->name . ' (' . $nyzoStringType->getPrefix() . ')' . PHP_EOL;
     }
     echo PHP_EOL;
+}
+
+function displayNyzoStringEncoderValues() {
+    echo 'NyzoStringEncoder::characterLookup: ' . NyzoStringEncoder::characterLookup . PHP_EOL;
+    echo 'NyzoStringEncoder::$characterToValueMap: ';
+    echo print_r(NyzoStringEncoder::$characterToValueMap) . PHP_EOL;
+    echo 'NyzoStringEncoder::headerLength: ' . NyzoStringEncoder::headerLength . PHP_EOL;
+
 }
 
 runTests();
