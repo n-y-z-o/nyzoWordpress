@@ -14,3 +14,21 @@ class NyzoStringEncoder {
 for ($i = 0; $i < strlen(NyzoStringEncoder::characterLookup); $i++) {
     NyzoStringEncoder::$characterToValueMap[NyzoStringEncoder::characterLookup[$i]] = $i;
 }
+
+function byteArrayForEncodedString(string $encodedString): string {
+
+        //int arrayLength = (encodedString.length() * 6 + 7) / 8;
+        //byte[] array = new byte[arrayLength];
+        //for (int i = 0; i < arrayLength; i++) {
+
+        //    char leftCharacter = encodedString.charAt(i * 8 / 6);
+        //    char rightCharacter = encodedString.charAt(i * 8 / 6 + 1);
+
+        //    int leftValue = characterToValueMap.getOrDefault(leftCharacter, 0);
+        //    int rightValue = characterToValueMap.getOrDefault(rightCharacter, 0);
+        //    int bitOffset = (i * 2) % 6;
+        //    array[i] = (byte) ((((leftValue << 6) + rightValue) >> 4 - bitOffset) & 0xff);
+        //}
+
+    return 'hello'; //    return array;
+}
