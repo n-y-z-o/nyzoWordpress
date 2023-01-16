@@ -29,6 +29,37 @@ class NyzoStringEncoder {
 
         return $array;
     }
+
+    static function encodedStringForByteArray(string $array): string {
+
+            $index = 0;
+            $bitOffset = 0;
+            $encodedString = '';
+            $arrayLength = strlen($array);
+            while ($index < $arrayLength) {
+
+                // Get the current and next byte.
+                $leftByte = hexdec($array[$index] . $array[$index + 1]);
+                $rightByte = 0;
+                if ($index < $arrayLength - 2) {
+                    $rightByte = hexdec($array[$index + 2] . $array[$index + 3]);
+                }
+
+                // Append the character for the next 6 bits in the array.
+                $lookupIndex = ((($leftByte << 8) + $rightByte) >> (10 - $bitOffset)) & 0x3f;
+                $encodedString .= NyzoStringEncoder::characterLookup[$lookupIndex];
+
+                // Advance forward 6 bits.
+                if ($bitOffset == 0) {
+                    $bitOffset = 6;
+                } else {
+                    $index += 2;
+                    $bitOffset -= 2;
+                }
+            }
+
+            return $encodedString;
+        }
 }
 
 for ($i = 0; $i < strlen(NyzoStringEncoder::characterLookup); $i++) {

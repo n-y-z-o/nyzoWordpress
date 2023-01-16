@@ -51,7 +51,13 @@ class NyzoStringTest {
                      $decodedByteArray . ') in iteration ' . $i . ' of NyzoStringTest::testEncoder()';
             }
 
-            // TODO: check encoding against the expected encoded string.
+            // Check encoding against the expected encoded string.
+            $encodedString = NyzoStringEncoder::encodedStringForByteArray($byteArray);
+            if ($string !== $encodedString) {
+                $successful = false;
+                $failureCause = 'mismatch of expected string (' . $string . ') and encoded string (' . $encodedString .
+                    ') in iteration ' . $i . ' of NyzoStringTest::testEncoder()';
+            }
         }
 
         echo NyzoTestUtil::passFail($successful) . PHP_EOL;
