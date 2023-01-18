@@ -1,6 +1,7 @@
 <?php
 
 define('__ROOT__', dirname(dirname(__FILE__)));
+require_once(__ROOT__ . '/lib/nyzoString.php');
 require_once(__ROOT__ . '/lib/nyzoStringEncoder.php');
 require_once(__ROOT__ . '/lib/nyzoStringType.php');
 
