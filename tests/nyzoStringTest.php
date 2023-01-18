@@ -16,7 +16,7 @@ class NyzoStringTest {
         try {
             $successful = self::testEncoder();
         } catch (Exception $e) {
-            $failureCause = "exception in NyzoStringTest->testEncoder(): " + $e;
+            $failureCause = 'exception in NyzoStringTest->testEncoder(): ' . $e;
             $successful = false;
         }
 
