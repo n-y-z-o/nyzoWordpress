@@ -4,23 +4,29 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 require_once(__ROOT__ . '/lib/nyzoString.php');
 require_once(__ROOT__ . '/lib/nyzoStringEncoder.php');
 require_once(__ROOT__ . '/lib/nyzoStringType.php');
+require_once(__ROOT__ . '/tests/nyzoTest.php');
 
-class NyzoStringTest {
+class NyzoStringTest implements NyzoTest {
 
-    static function run(): bool {
+    private string $failureCause = '';
+
+    function run(): bool {
         self::displayNyzoStringTypeValues();
         self::displayNyzoStringEncoderValues();
 
         $successful = true;
-        $failureCause = '';
         try {
             $successful = self::testEncoder();
         } catch (Exception $e) {
-            $failureCause = 'exception in NyzoStringTest->testEncoder(): ' . $e;
+            $this->failureCause = 'exception in NyzoStringTest->testEncoder(): ' . $e->getMessage();
             $successful = false;
         }
 
         return $successful;
+    }
+
+    function getFailureCause(): string {
+        return $this->failureCause;
     }
 
     static function testEncoder(): bool {

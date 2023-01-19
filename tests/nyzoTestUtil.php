@@ -20,7 +20,17 @@ class NyzoTestUtil {
         echo '* running tests *' . PHP_EOL;
         echo '*****************' . PHP_EOL . PHP_EOL;
 
-        $successful = NyzoStringTest::run();
+        $tests = [
+            new NyzoStringTest()
+        ];
+
+        $successful = true;
+        for ($i = 0; $i < count($tests) && $successful; $i++) {
+            $successful = $tests[$i]->run();
+            if (!$successful) {
+                echo NyzoTestUtil::failureCause($tests[$i]->getFailureCause()) . PHP_EOL;
+            }
+        }
 
         if ($successful) {
             echo NyzoTestUtil::SUCCESS_DARK . "++ALL TESTS PASSED++" . NyzoTestUtil::CONSOLE_RESET . PHP_EOL;
@@ -43,6 +53,10 @@ class NyzoTestUtil {
                 $backtrace['class'] . $backtrace['type'] . $backtrace['function'] . '()' . NyzoTestUtil::CONSOLE_RESET;
         }
         return $result;
+    }
+
+    static function failureCause(string $failureCause): string {
+        return NyzoTestUtil::FAILURE_DARK . 'failure cause: ' . $failureCause . NyzoTestUtil::CONSOLE_RESET;
     }
 }
 
