@@ -20,7 +20,11 @@ class NyzoTestUtil {
         echo '* running tests *' . PHP_EOL;
         echo '*****************' . PHP_EOL . PHP_EOL;
 
-        NyzoStringTest::run();
+        $successful = NyzoStringTest::run();
+
+        if ($successful) {
+            echo NyzoTestUtil::SUCCESS_DARK . "++ALL TESTS PASSED++" . NyzoTestUtil::CONSOLE_RESET . PHP_EOL;
+        }
 
         echo PHP_EOL;
     }
