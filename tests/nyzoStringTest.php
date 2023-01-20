@@ -3,6 +3,7 @@
 define('__ROOT__', dirname(dirname(__FILE__)));
 require_once(__ROOT__ . '/lib/nyzoString.php');
 require_once(__ROOT__ . '/lib/nyzoStringEncoder.php');
+require_once(__ROOT__ . '/lib/nyzoStringPublicIdentifier.php');
 require_once(__ROOT__ . '/lib/nyzoStringType.php');
 require_once(__ROOT__ . '/tests/nyzoTest.php');
 
@@ -20,6 +21,15 @@ class NyzoStringTest implements NyzoTest {
         } catch (Exception $e) {
             $this->failureCause = 'exception in NyzoStringTest->testEncoder(): ' . $e->getMessage();
             $successful = false;
+        }
+
+        if ($successful) {
+            try {
+                $successful = self::testPublicIdentifierStrings();
+            } catch (Exception $e) {
+                $this->failureCause = 'exception in NyzoStringTest->testPublicIdentifierStrings(): ' . $e->getMessage();
+                $successful = false;
+            }
         }
 
         return $successful;
@@ -73,6 +83,17 @@ class NyzoStringTest implements NyzoTest {
         }
 
         return $successful;
+    }
+
+    static function testPublicIdentifierStrings(): bool {
+
+        // This is not the final test. Encoding and decoding need to be tested.
+        for ($i = 0; $i < 10; $i++) {
+            $identifier = bin2hex(random_bytes(32));
+            $publicIdentifier = new NyzoStringPublicIdentifier($identifier);
+        }
+
+        return true;
     }
 
     static function displayNyzoStringTypeValues() {
