@@ -1,11 +1,11 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__)));
-require_once(__ROOT__ . '/lib/nyzoString.php');
-require_once(__ROOT__ . '/lib/nyzoStringEncoder.php');
-require_once(__ROOT__ . '/lib/nyzoStringPublicIdentifier.php');
-require_once(__ROOT__ . '/lib/nyzoStringType.php');
-require_once(__ROOT__ . '/tests/nyzoTest.php');
+if (!defined('__NYZO_EXTENSION_ROOT__')) { define('__NYZO_EXTENSION_ROOT__', dirname(dirname(__FILE__))); }
+require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoString.php');
+require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringEncoder.php');
+require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringPublicIdentifier.php');
+require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringType.php');
+require_once(__NYZO_EXTENSION_ROOT__ . '/tests/nyzoTest.php');
 
 class NyzoStringTest implements NyzoTest {
 
@@ -39,7 +39,7 @@ class NyzoStringTest implements NyzoTest {
         return $this->failureCause;
     }
 
-    static function testEncoder(): bool {
+    function testEncoder(): bool {
 
         // The encoding lookup table is 64 characters. 64 characters store 6 bits (2^6=64). This allows the encoder to
         // store 3 bytes (24 bits) in 4 characters. This test checks encoding and decoding up to double this packing
@@ -64,7 +64,7 @@ class NyzoStringTest implements NyzoTest {
             $decodedByteArray = NyzoStringEncoder::byteArrayForEncodedString($string);
             if ($byteArray !== $decodedByteArray) {
                 $successful = false;
-                $failureCause = 'mismatch of expected byte array (' . $byteArray . ') and decoded byte array (' .
+                $this->failureCause = 'mismatch of expected byte array (' . $byteArray . ') and decoded byte array (' .
                      $decodedByteArray . ') in iteration ' . $i . ' of NyzoStringTest::testEncoder()';
             }
 
@@ -72,28 +72,48 @@ class NyzoStringTest implements NyzoTest {
             $encodedString = NyzoStringEncoder::encodedStringForByteArray($byteArray);
             if ($string !== $encodedString) {
                 $successful = false;
-                $failureCause = 'mismatch of expected string (' . $string . ') and encoded string (' . $encodedString .
+                $this->failureCause = 'mismatch of expected string (' . $string . ') and encoded string (' . $encodedString .
                     ') in iteration ' . $i . ' of NyzoStringTest::testEncoder()';
             }
         }
 
         echo NyzoTestUtil::passFail($successful) . PHP_EOL;
         if (!$successful) {
-            echo 'failure cause: ' . $failureCause;
+            echo 'failure cause: ' . $this->failureCause;
         }
 
         return $successful;
     }
 
-    static function testPublicIdentifierStrings(): bool {
+    function testPublicIdentifierStrings(): bool {
 
-        // This is not the final test. Encoding and decoding need to be tested.
-        for ($i = 0; $i < 10; $i++) {
-            $identifier = bin2hex(random_bytes(32));
-            $publicIdentifier = new NyzoStringPublicIdentifier($identifier);
+        $rawIdentifiers = [
+            'c34a6f1942cb7ec10d2a440b3e116041d05df2746ebe7b41802340a1495e7af5'
+        ];
+        $nyzoStrings = [
+            'id__8cdasPC2QVZ13iG42RWhp47gow9SsIXZgp0Aga59oEITG2X-M7Ur'
+        ];
+
+        // Check decoding and encoding for all values.
+        $successful = true;
+        for ($i = 0; $i < count($rawIdentifiers) && $successful; $i++) {
+
+            $rawIdentifier = $rawIdentifiers[$i];
+            $nyzoString = $nyzoStrings[$i];
+
+            // TODO: Check decoding against the expected raw identifier.
+
+            // Check encoding against the expected encoded string.
+            $encodedString = NyzoStringEncoder::encode(new NyzoStringPublicIdentifier($rawIdentifier));
+            if ($nyzoString !== $encodedString) {
+                $successful = false;
+                $this->failureCause = 'mismatch of expected Nyzo string (' . $nyzoString .
+                    ') and encoded Nyzo string (' . $encodedString . ') in iteration ' . $i .
+                    ' of NyzoStringTest::testPublicIdentifierStrings()';
+            }
         }
 
-        return true;
+        return $successful;
     }
 
     static function displayNyzoStringTypeValues() {

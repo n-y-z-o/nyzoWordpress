@@ -17,6 +17,6 @@ class NyzoStringPublicIdentifier implements NyzoString {
     }
 
     function getBytes(): string {
-        return $identifier;
+        return $this->identifier;
     }
 }

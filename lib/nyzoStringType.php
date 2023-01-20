@@ -1,5 +1,8 @@
 <?php
 
+if (!defined('__NYZO_EXTENSION_ROOT__')) { define('__NYZO_EXTENSION_ROOT__', dirname(dirname(__FILE__))); }
+require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringEncoder.php');
+
 enum NyzoStringType: string {
     case Micropay = 'pay_';
     case PrefilledData = 'pre_';
@@ -10,5 +13,9 @@ enum NyzoStringType: string {
 
     public function getPrefix() {
         return $this->value;
+    }
+
+    public function getPrefixBytes() {
+        return NyzoStringEncoder::byteArrayForEncodedString($this->value);
     }
 }
