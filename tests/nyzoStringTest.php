@@ -18,16 +18,16 @@ class NyzoStringTest implements NyzoTest {
         $successful = true;
         try {
             $successful = self::testEncoder();
-        } catch (Exception $e) {
-            $this->failureCause = 'exception in NyzoStringTest->testEncoder(): ' . $e->getMessage();
+        } catch (Throwable $t) {
+            $this->failureCause = 'throwable in NyzoStringTest->testEncoder(): ' . $t->getMessage();
             $successful = false;
         }
 
         if ($successful) {
             try {
                 $successful = self::testPublicIdentifierStrings();
-            } catch (Exception $e) {
-                $this->failureCause = 'exception in NyzoStringTest->testPublicIdentifierStrings(): ' . $e->getMessage();
+            } catch (Throwable $t) {
+                $this->failureCause = 'throwable in NyzoStringTest->testPublicIdentifierStrings(): ' . $t->getMessage();
                 $successful = false;
             }
         }
@@ -72,8 +72,8 @@ class NyzoStringTest implements NyzoTest {
             $encodedString = NyzoStringEncoder::encodedStringForByteArray($byteArray);
             if ($string !== $encodedString) {
                 $successful = false;
-                $this->failureCause = 'mismatch of expected string (' . $string . ') and encoded string (' . $encodedString .
-                    ') in iteration ' . $i . ' of NyzoStringTest::testEncoder()';
+                $this->failureCause = 'mismatch of expected string (' . $string . ') and encoded string (' .
+                    $encodedString . ') in iteration ' . $i . ' of NyzoStringTest::testEncoder()';
             }
         }
 
@@ -101,7 +101,18 @@ class NyzoStringTest implements NyzoTest {
             $rawIdentifier = $rawIdentifiers[$i];
             $nyzoString = $nyzoStrings[$i];
 
-            // TODO: Check decoding against the expected raw identifier.
+            // Check decoding against the expected raw identifier.
+            $decodedIdentifier = NyzoStringEncoder::decode($nyzoString);
+            if ($decodedIdentifier == null) {
+                $successful = false;
+                $this->failureCause = 'unable to decode Nyzo string (' . $nyzoString . ') in iteration ' . $i .
+                    ' of NyzoStringTest::testPublicIdentifierStrings()';
+            } else if ($decodedIdentifier->getIdentifier() != $rawIdentifier) {
+                $successful = false;
+                $this->failureCause = 'mismatch of expected raw identifier (' . $rawIdentifier .
+                                    ') and decoded identifier (' . $decodedIdentifier->getIdentifier() .
+                                    ') in iteration ' . $i . ' of NyzoStringTest::testPublicIdentifierStrings()';
+            }
 
             // Check encoding against the expected encoded string.
             $encodedString = NyzoStringEncoder::encode(new NyzoStringPublicIdentifier($rawIdentifier));

@@ -40,6 +40,77 @@ class NyzoStringEncoder {
         return self::encodedStringForByteArray($expandedArray);
     }
 
+    static function decode(string $encodedString): ?NyzoString {
+
+        $result = null;
+
+        try {
+            // Map characters from the old encoding to the new encoding. A few characters were changed to make Nyzo
+            // strings more URL-friendly.
+            $encodedString = str_replace('*', '-', str_replace('+', '.', str_replace('=', '~', $encodedString)));
+
+            // Map characters that may be mistyped. Nyzo strings contain neither 'l' nor 'O'.
+            $encodedString = str_replace('l', 'I', str_replace('O', '0', $encodedString));
+
+            // Get the type from the prefix.
+            $type = NyzoStringType::forPrefix(substr($encodedString, 0, 4));
+
+            // If the type is valid, continue.
+            if ($type != null) {
+
+                // Get the array representation of the encoded string.
+                $expandedArray = self::byteArrayForEncodedString($encodedString);
+
+                // Get the content length from the next byte and calculate the checksum length.
+                $contentLength = hexdec($expandedArray[6] . $expandedArray[7]);
+                $checksumLength = strlen($expandedArray) / 2 - $contentLength - 4;
+
+                // Only continue if the checksum length is valid.
+                if ($checksumLength >= 4 && $checksumLength <= 6) {
+
+                    // Calculate the checksum and compare it to the provided checksum. Only create the result array if
+                    // the checksums match.
+                    $calculatedChecksum = substr(NyzoHashUtil::doubleSHA256(substr($expandedArray, 0,
+                        (self::headerLength + $contentLength) * 2)), 0, $checksumLength * 2);
+                    $providedChecksum = substr($expandedArray, strlen($expandedArray) - $checksumLength * 2);
+
+                    if ($calculatedChecksum === $providedChecksum) {
+                        // Get the content array. This is the encoded object with the prefix, length byte, and checksum
+                        // removed.
+                        $contentBytes = substr($expandedArray, self::headerLength * 2, strlen($expandedArray) -
+                            self::headerLength * 2 - $checksumLength * 2);
+
+                        // Make the object from the content array.
+                        switch ($type) {
+                            //case Micropay:
+                            //    result = NyzoStringMicropay.fromByteBuffer(ByteBuffer.wrap(contentBytes));
+                            //    break;
+                            //case PrefilledData:
+                            //    result = NyzoStringPrefilledData.fromByteBuffer(ByteBuffer.wrap(contentBytes));
+                            //    break;
+                            //case PrivateSeed:
+                            //    result = new NyzoStringPrivateSeed(contentBytes);
+                            //    break;
+                            case NyzoStringType::PublicIdentifier:
+                                $result = new NyzoStringPublicIdentifier($contentBytes);
+                                break;
+                            //case Signature:
+                            //    result = new NyzoStringSignature(contentBytes);
+                            //    break;
+                            //case Transaction:
+                            //    result = NyzoStringTransaction.fromByteBuffer(ByteBuffer.wrap(contentBytes));
+                            //    break;
+                        }
+                    }
+                }
+            }
+        } catch (Throwable $t) {
+            echo 'throwable decoding string ' . $encodedString . ': ' . $t->getMessage() . PHP_EOL;
+        }
+
+        return $result;
+    }
+
     static function byteArrayForEncodedString(string $encodedString): string {
 
         $arrayLength = floor(strlen($encodedString) * 6 / 8);

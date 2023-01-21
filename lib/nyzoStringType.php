@@ -18,4 +18,16 @@ enum NyzoStringType: string {
     public function getPrefixBytes() {
         return NyzoStringEncoder::byteArrayForEncodedString($this->value);
     }
+
+    public static function forPrefix(string $prefix): NyzoStringType {
+
+        $result = null;
+        foreach (self::cases() as $type) {
+            if ($type->getPrefix() === $prefix) {
+                $result = $type;
+            }
+        }
+
+        return $result;
+    }
 }
