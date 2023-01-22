@@ -39,7 +39,7 @@ class NyzoTestUtil {
         echo PHP_EOL;
     }
 
-    static function passFail(bool $successful): string {
+    static function passFail(bool $successful, string $failureCause): string {
 
         // Get information about the calling function.
         $backtrace = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT|DEBUG_BACKTRACE_IGNORE_ARGS,2)[1];
@@ -50,7 +50,8 @@ class NyzoTestUtil {
                 $backtrace['class'] . $backtrace['type'] . $backtrace['function'] . '()' . NyzoTestUtil::CONSOLE_RESET;
         } else {
             $result = NyzoTestUtil::FAILURE_DARK . '--FAIL--' . NyzoTestUtil::FAILURE_LIGHT . ' ' .
-                $backtrace['class'] . $backtrace['type'] . $backtrace['function'] . '()' . NyzoTestUtil::CONSOLE_RESET;
+                $backtrace['class'] . $backtrace['type'] . $backtrace['function'] . '(), failure cause: ' .
+                $failureCause . NyzoTestUtil::CONSOLE_RESET;
         }
         return $result;
     }

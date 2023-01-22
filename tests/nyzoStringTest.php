@@ -77,10 +77,7 @@ class NyzoStringTest implements NyzoTest {
             }
         }
 
-        echo NyzoTestUtil::passFail($successful) . PHP_EOL;
-        if (!$successful) {
-            echo 'failure cause: ' . $this->failureCause;
-        }
+        echo NyzoTestUtil::passFail($successful, $this->failureCause) . PHP_EOL;
 
         return $successful;
     }
@@ -143,6 +140,8 @@ class NyzoStringTest implements NyzoTest {
                     ' of NyzoStringTest::testPublicIdentifierStrings()';
             }
         }
+
+        echo NyzoTestUtil::passFail($successful, $this->failureCause) . PHP_EOL;
 
         return $successful;
     }
