@@ -88,9 +88,9 @@ class NyzoStringEncoder {
                             //case PrefilledData:
                             //    result = NyzoStringPrefilledData.fromByteBuffer(ByteBuffer.wrap(contentBytes));
                             //    break;
-                            //case PrivateSeed:
-                            //    result = new NyzoStringPrivateSeed(contentBytes);
-                            //    break;
+                            case NyzoStringType::PrivateSeed:
+                                $result = new NyzoStringPrivateSeed($contentBytes);
+                                break;
                             case NyzoStringType::PublicIdentifier:
                                 $result = new NyzoStringPublicIdentifier($contentBytes);
                                 break;

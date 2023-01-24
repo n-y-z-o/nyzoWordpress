@@ -3,6 +3,7 @@
 if (!defined('__NYZO_EXTENSION_ROOT__')) { define('__NYZO_EXTENSION_ROOT__', dirname(dirname(__FILE__))); }
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoString.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringEncoder.php');
+require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringPrivateSeed.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringPublicIdentifier.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringType.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/tests/nyzoTest.php');
@@ -21,6 +22,15 @@ class NyzoStringTest implements NyzoTest {
         } catch (Throwable $t) {
             $this->failureCause = 'throwable in NyzoStringTest->testEncoder(): ' . $t->getMessage();
             $successful = false;
+        }
+
+        if ($successful) {
+            try {
+                $successful = self::testPrivateSeedStrings();
+            } catch (Throwable $t) {
+                $this->failureCause = 'throwable in NyzoStringTest->testPrivateSeedStrings(): ' . $t->getMessage();
+                $successful = false;
+            }
         }
 
         if ($successful) {
@@ -82,6 +92,77 @@ class NyzoStringTest implements NyzoTest {
         return $successful;
     }
 
+    function testPrivateSeedStrings() {
+
+        $rawSeeds = [
+            "74d84ed425f51e6faa9bae140e95260129d16a73241231dc6962619b5fbc6e27",
+            "083a351b43b5b283adab877df813bf180fffce2c72a4748282ad5f5eeac04bbf",
+            "b8339a33324ab02497954384b6ea999357e8b5132369a96241f74915032b5673",
+            "c571973ddbf47ed2c595706b8ac4f5574207fe88f823f007d60e33ec54d5bf28",
+            "97dae745780f98795c2983ed27f8fae37b0efe324773734876cc30b53d09cff5",
+            "372f5fc01964a907c2e22b54370232408c11069a790ec948dbadea54512132c1",
+            "d43b855022d33bf9234ee3ffd5cf5e0b663dade78d54ccd9c182af72d4fb34ba",
+            "3f98368bcb4918aeede55d4a14d98a79dd20eeff942acc686a29e40f443d4216",
+            "6ef86c169f08e51f5417da92760b48cf2a855349332a261b1b5bdd92cd625ae3",
+            "fc0c914efd39b5cbcf567a6f7584763967d6b71f2420a9f79d887681d3a46a4a",
+            "a7f3f7629ad8843c99441d73fd1b17e1161c591bb5da5831bdc6f79f6ca9ad4f",
+            "d1376eadfde5daa931e165b3f0bef4c19b81430c47486dc0ccca1c69e30680fa",
+            "0163f2e202f10b8bdad1e53ea1992e1abd6e54c8d0e5a6771ff74edc379652d1",
+            "5f1d019e58ecd6d41cb59bff5912ed3f293058b05a7d52ad9077646f9995a4c1",
+            "3bde14ad035556d44187371ad693cb49ef2f041f82349660fb6d7689f29a2fdf"
+        ];
+        $nyzoStrings = [
+            "key_87jpjKgC.hXMHGLL50Ym9x4GSnGR918PV6CzpqKwM6WEgqRzfABZ",
+            "key_80xYdhK3Ksa3IrL7wwxjMPxf_-WJtHhSxFaKoTZHN4L_7md3ZIZw",
+            "key_8bxRDAcQiI0BCXm3ybsHDqdoYbkj8UDGpB7Vihk3aTqRRc19vgou",
+            "key_8cmPCRVs.7ZiPqmNrWI4.mu21_Y8~2fN1.pec~PkTs-F1z~UFs3n",
+            "key_89wrXSmW3XyXo2D3ZiwW~LdZ3MWQhVdRi7sccbk.2t_TNZe8NV6-",
+            "key_83tMo-0qqaB7NL8Im3t2cB2c4grrvgZ9idLKYChh8jb1aHbuTfIs",
+            "key_8dgZym0zSRMX8SZA_.ofoxKDfrVEAmjcUt62IVbk~RiY51mPR6kc",
+            "key_83~pdFMbihzLZvmuiyjqzEEu8eZ_C2Icr6FGX0.4fk8nD6NvR.nE",
+            "key_86ZWs1rw2ekwm1wrBEpbic-Hymd9cQFD6PKsVqbdpCIAi3q3iLQw",
+            "key_8fNcBkZ.esobRTqYsVn4uACETItw922G.XU8uF7jG6GaUQxNGNI1",
+            "key_8awR.UarU8g-Dkgut_Ss5~4n75BsKuGpcsV6.X.JHrTfMA8TdX8F",
+            "key_8d4VsHV.XuHGcv5CJ_2~.c6sxkcchSyKNcRa76EA1F3YDgsruj2K",
+            "key_805A-L82-gLbUK7CfH6qbyH.sCj8SenDuP_VjKNVCCbh7Y763Hmm",
+            "key_85-u0qXpZdsk7bns_TBiZj-Gc5zNnETiIq1Vq6~qCrj1y31e7JvM",
+            "key_83Mv5aS3mmskgptV6KrjQSEMbNgwxAinpfKKuFEQDz_w5mc5yPI0"
+        ];
+
+        // Check decoding and encoding for all values.
+        $successful = true;
+        for ($i = 0; $i < count($rawSeeds) && $successful; $i++) {
+
+            $rawSeed = $rawSeeds[$i];
+            $nyzoString = $nyzoStrings[$i];
+
+            // Check decoding against the expected raw seed.
+            $decodedKey = NyzoStringEncoder::decode($nyzoString);
+            if ($decodedKey == null) {
+                $successful = false;
+                $this->failureCause = 'unable to decode Nyzo string (' . $nyzoString . ') in iteration ' . $i .
+                    ' of NyzoStringTest::testPrivateSeedStrings()';
+            } else if ($decodedKey->getSeed() !== $rawSeed) {
+                $successful = false;
+                $this->failureCause = 'mismatch of expected raw seed (' . $rawSeed . ') and decoded seed (' .
+                    $decodedKey->getSeed() . ') in iteration ' . $i . ' of NyzoStringTest::testPrivateSeedStrings()';
+            }
+
+            // Check encoding against the expected encoded string.
+            $encodedString = NyzoStringEncoder::encode(new NyzoStringPrivateSeed($rawSeed));
+            if ($nyzoString !== $encodedString) {
+                $successful = false;
+                $this->failureCause = 'mismatch of expected Nyzo string (' . $nyzoString .
+                    ') and encoded Nyzo string (' . $encodedString . ') in iteration ' . $i .
+                    ' of NyzoStringTest::testPrivateSeedStrings()';
+            }
+        }
+
+        echo NyzoTestUtil::passFail($successful, $this->failureCause) . PHP_EOL;
+
+        return $successful;
+    }
+
     function testPublicIdentifierStrings(): bool {
 
         $rawIdentifiers = [
@@ -124,7 +205,7 @@ class NyzoStringTest implements NyzoTest {
                 $successful = false;
                 $this->failureCause = 'unable to decode Nyzo string (' . $nyzoString . ') in iteration ' . $i .
                     ' of NyzoStringTest::testPublicIdentifierStrings()';
-            } else if ($decodedIdentifier->getIdentifier() != $rawIdentifier) {
+            } else if ($decodedIdentifier->getIdentifier() !== $rawIdentifier) {
                 $successful = false;
                 $this->failureCause = 'mismatch of expected raw identifier (' . $rawIdentifier .
                                     ') and decoded identifier (' . $decodedIdentifier->getIdentifier() .
