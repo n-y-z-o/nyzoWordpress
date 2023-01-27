@@ -40,8 +40,8 @@ function nyzo_plugin_setting_receiver_id() {
     } catch (Throwable $t) {
         $receiverId = '';
     }
-    echo '<input id="nyzo_plugin_setting_receiver_id" name="nyzo_plugin_options[receiver_id]" type="text" value="' .
-        esc_attr($receiverId) . '" />';
+    echo '<input id="nyzo_plugin_setting_receiver_id" name="nyzo_plugin_options[receiver_id]" class="regular-text" ' .
+        'type="text" value="' . esc_attr($receiverId) . '" />';
 }
 
 function nyzo_plugin_options_validate($newValues) {
