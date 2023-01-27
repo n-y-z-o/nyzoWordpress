@@ -11,3 +11,10 @@ License: The Unlicense
 
 define( 'NYZO__PLUGIN_DIRECTORY', plugin_dir_path( __FILE__ ) );
 require_once( NYZO__PLUGIN_DIRECTORY . 'settings.php' );
+
+function nyzo_content_filter( $content ) {
+     return $content . '<p class="nyzo-notice">Nyzo plugin installed and activated</p>';
+}
+add_filter('the_content', 'nyzo_content_filter');
+
+wp_enqueue_style('nyzo-style', plugins_url('css/nyzo.css', __FILE__));
