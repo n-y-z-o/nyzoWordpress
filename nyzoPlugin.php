@@ -18,3 +18,4 @@ function nyzo_content_filter( $content ) {
 add_filter('the_content', 'nyzo_content_filter');
 
 wp_enqueue_style('nyzo-style', plugins_url('css/nyzo.css', __FILE__));
+wp_enqueue_script('nyzo-byte-buffer', plugins_url('javascript/byteBuffer.js', __FILE__));
