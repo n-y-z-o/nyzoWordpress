@@ -18,4 +18,8 @@ function nyzo_content_filter( $content ) {
 add_filter('the_content', 'nyzo_content_filter');
 
 wp_enqueue_style('nyzo-style', plugins_url('css/nyzo.css', __FILE__));
+wp_enqueue_script('nyzo-nacl', plugins_url('javascript/nacl.min.js', __FILE__));
+wp_enqueue_script('nyzo-sha256', plugins_url('javascript/sha256.min.js', __FILE__));
 wp_enqueue_script('nyzo-byte-buffer', plugins_url('javascript/byteBuffer.js', __FILE__));
+wp_enqueue_script('nyzo-string', plugins_url('javascript/nyzoString.js', __FILE__));
+wp_enqueue_script('nyzo-util', plugins_url('javascript/util.js', __FILE__));
