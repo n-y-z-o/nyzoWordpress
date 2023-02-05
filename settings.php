@@ -27,8 +27,10 @@ function nyzo_register_settings() {
 
     add_settings_field('nyzo_plugin_setting_receiver_id', 'receiver ID', 'nyzo_plugin_setting_receiver_id',
         'nyzo_plugin', 'account_settings');
+    add_settings_field('nyzo_plugin_setting_client_endpoint', 'client endpoint', 'nyzo_plugin_setting_client_endpoint',
+        'nyzo_plugin', 'account_settings');
 }
-add_action( 'admin_init', 'nyzo_register_settings' );
+add_action('admin_init', 'nyzo_register_settings');
 
 function nyzo_plugin_section_text() {
 }
@@ -42,6 +44,17 @@ function nyzo_plugin_setting_receiver_id() {
     }
     echo '<input id="nyzo_plugin_setting_receiver_id" name="nyzo_plugin_options[receiver_id]" class="regular-text" ' .
         'type="text" value="' . esc_attr($receiverId) . '" />';
+}
+
+function nyzo_plugin_setting_client_endpoint() {
+    $options = get_option('nyzo_plugin_options');
+    try {
+        $clientEndpoint = $options['client_endpoint'];
+    } catch (Throwable $t) {
+        $clientEndpoint = '';
+    }
+    echo '<input id="nyzo_plugin_setting_client_endpoint" name="nyzo_plugin_options[client_endpoint]" ' .
+        'class="regular-text" type="text" value="' . esc_attr($clientEndpoint) . '" />';
 }
 
 function nyzo_plugin_options_validate($newValues) {
