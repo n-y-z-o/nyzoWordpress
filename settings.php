@@ -59,15 +59,48 @@ function nyzo_plugin_setting_client_endpoint() {
 
 function nyzo_plugin_options_validate($newValues) {
 
+    // Get the current values.
+    $options = get_option('nyzo_plugin_options');
+
+    // Validate the receiver identifier.
     $identifierString = $newValues['receiver_id'];
     if (empty($identifierString)) {
         add_settings_error('nyzo_messages', 'nyzo_message', __('Receiver ID is required', 'nyzo'), 'error');
+        $newValues['receiver_id'] = $options['receiver_id'];
     } else {
         $publicIdentifierObject = NyzoStringEncoder::decode($identifierString);
         if ($publicIdentifierObject === null) {
             add_settings_error('nyzo_messages', 'nyzo_message',
                 __('Receiver ID must be a valid Nyzo string public identifier', 'nyzo'), 'error');
+            $newValues['receiver_id'] = $options['receiver_id'];
         }
+    }
+
+    // Get the client endpoint for validation.
+    try {
+        $clientEndpoint = $newValues['client_endpoint'];
+    } catch (Throwable $t) {
+        $clientEndpoint = '';
+    }
+
+    // Get the scheme from the client endpoint.
+    try {
+        $scheme = strtolower(parse_url($clientEndpoint, PHP_URL_SCHEME));
+    } catch (Throwable $t) {
+        $scheme = '';
+    }
+
+    // Ensure the client endpoint is a valid URL.
+    if (!filter_var($clientEndpoint, FILTER_VALIDATE_URL)) {
+        add_settings_error('nyzo_messages', 'nyzo_message', __('Client endpoint must be a valid URL', 'nyzo'), 'error');
+        $newValues['client_endpoint'] = $options['client_endpoint'];
+    }
+
+    // Ensure the endpoint URL scheme is http or https.
+    if (strcmp($scheme, 'http') && strcmp($scheme, 'https')) {
+        add_settings_error('nyzo_messages', 'nyzo_message', __('Client endpoint must be http or https', 'nyzo'),
+            'error');
+        $newValues['client_endpoint'] = $options['client_endpoint'];
     }
 
     return $newValues;
