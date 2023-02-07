@@ -121,16 +121,16 @@ function decode(encodedString) {
 
 function byteArrayForEncodedString(encodedString) {
 
-    var arrayLength = (encodedString.length * 6 + 7) / 8;
-    var array = new Uint8Array(arrayLength);
-    for (var i = 0; i < arrayLength; i++) {
+    let arrayLength = encodedString.length * 6 / 8;
+    let array = new Uint8Array(arrayLength);
+    for (let i = 0; i < arrayLength; i++) {
 
-        var leftCharacter = encodedString.charAt(i * 8 / 6);
-        var rightCharacter = encodedString.charAt(i * 8 / 6 + 1);
+        let leftCharacter = encodedString.charAt(i * 8 / 6);
+        let rightCharacter = encodedString.charAt(i * 8 / 6 + 1);
 
-        var leftValue = characterToValueMap[leftCharacter];
-        var rightValue = characterToValueMap[rightCharacter];
-        var bitOffset = (i * 2) % 6;
+        let leftValue = characterToValueMap[leftCharacter];
+        let rightValue = characterToValueMap[rightCharacter];
+        let bitOffset = (i * 2) % 6;
         array[i] = ((((leftValue << 6) + rightValue) >> 4 - bitOffset) & 0xff);
     }
 
