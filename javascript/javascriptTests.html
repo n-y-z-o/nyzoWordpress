@@ -7,6 +7,7 @@
     <script src="byteBuffer.js"></script>
     <script src="nyzoString.js"></script>
     <script src="util.js"></script>
+    <script src="nyzoTestUtil.js"></script>
 
     <style>
         body {
@@ -21,6 +22,12 @@
     <p>
         This page, when opened or refreshed, will run tests on the Nyzo JavaScript codebase.
     </p>
+
+    <div id="test-results"></div>
+
+    <script>
+        runNyzoTests(document.getElementById('test-results'));
+    </script>
 </body>
 
 </html>
