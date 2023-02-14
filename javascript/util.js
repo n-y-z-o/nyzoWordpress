@@ -12,6 +12,32 @@ function hexStringAsUint8Array(identifier) {
     return array;
 }
 
+function uint8ArrayAsHexString(array) {
+    let hexString = '';
+    for (let i = 0; i < array.length; i++) {
+        hexString += array[i] < 16 ? '0' : '';
+        hexString += array[i].toString(16);
+    }
+
+    return hexString;
+}
+
+function uint8ArrayAsHexStringWithDashes(array) {
+    let hexString = '';
+    let bytesSinceDash = 0;
+    for (let i = 0; i < array.length; i++) {
+        if (bytesSinceDash == 8) {
+            hexString += '-';
+            bytesSinceDash = 0;
+        }
+        hexString += array[i] < 16 ? '0' : '';
+        hexString += array[i].toString(16);
+        bytesSinceDash++;
+    }
+
+    return hexString;
+}
+
 function sha256Uint8(array) {
     var ascii = '';
     for (var i = 0; i < array.length; i++) {

@@ -35,8 +35,8 @@ class NyzoStringTest {
             const decodedByteArray = byteArrayForEncodedString(string);
             if (!arraysAreEqual(byteArray, decodedByteArray)) {
                 successful = false;
-                failureCause = 'mismatch of expected byte array (' + byteArray +
-                    ') and decoded byte array (' + decodedByteArray + ') in iteration ' + i +
+                failureCause = 'mismatch of expected byte array (' + uint8ArrayAsHexString(byteArray) +
+                    ') and decoded byte array (' + uint8ArrayAsHexString(decodedByteArray) + ') in iteration ' + i +
                     ' of NyzoStringTest.testEncoder()';
             }
 
