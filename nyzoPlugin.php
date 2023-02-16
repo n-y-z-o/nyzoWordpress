@@ -28,7 +28,7 @@ add_action('wp_enqueue_styles', 'nyzo_enqueue_styles');
 function nyzo_enqueue_scripts() {
     wp_enqueue_script('nyzo_nacl', plugins_url('javascript/nacl.min.js', __FILE__));
     wp_enqueue_script('nyzo_sha256', plugins_url('javascript/sha256.min.js', __FILE__));
-    wp_enqueue_script('nyzo_byte-buffer', plugins_url('javascript/byteBuffer.js', __FILE__));
+    wp_enqueue_script('nyzo_byte_buffer', plugins_url('javascript/byteBuffer.js', __FILE__));
     wp_enqueue_script('nyzo_string', plugins_url('javascript/nyzoString.js', __FILE__));
     wp_enqueue_script('nyzo_util', plugins_url('javascript/util.js', __FILE__));
 }

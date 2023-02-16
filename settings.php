@@ -10,7 +10,7 @@ function nyzo_add_settings_page() {
     add_options_page( 'Nyzo plugin page', $menu_navigation_name, 'manage_options', 'nyzo_plugin',
         'nyzo_render_settings_page' );
 }
-add_action( 'admin_menu', 'nyzo_add_settings_page' );
+add_action('admin_menu', 'nyzo_add_settings_page');
 
 function nyzo_render_settings_page() {
     echo '<h1>Nyzo settings</h1>';
@@ -42,7 +42,7 @@ function nyzo_plugin_setting_receiver_id() {
     } catch (Throwable $t) {
         $receiverId = '';
     }
-    echo '<input id="nyzo_plugin_setting_receiver_id" name="nyzo_plugin_options[receiver_id]" class="regular-text" ' .
+    echo '<input id="nyzo-plugin-setting-receiver-id" name="nyzo_plugin_options[receiver_id]" class="regular-text" ' .
         'type="text" value="' . esc_attr($receiverId) . '" />';
 }
 
@@ -105,3 +105,13 @@ function nyzo_plugin_options_validate($newValues) {
 
     return $newValues;
 }
+
+function nyzo_admin_enqueue_scripts() {
+    wp_enqueue_script('nyzo_nacl', plugins_url('javascript/nacl.min.js', __FILE__));
+    wp_enqueue_script('nyzo_sha256', plugins_url('javascript/sha256.min.js', __FILE__));
+    wp_enqueue_script('nyzo_byte_buffer', plugins_url('javascript/byteBuffer.js', __FILE__));
+    wp_enqueue_script('nyzo_string', plugins_url('javascript/nyzoString.js', __FILE__));
+    wp_enqueue_script('nyzo_util', plugins_url('javascript/util.js', __FILE__));
+    wp_enqueue_script('nyzo_settings', plugins_url('javascript/settings.js', __FILE__));
+}
+add_action('admin_enqueue_scripts', 'nyzo_admin_enqueue_scripts');
