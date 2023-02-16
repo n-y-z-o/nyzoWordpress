@@ -8,6 +8,7 @@ class NyzoStringTest {
 
         result.push(this.testEncoder());
         result.push(this.testPrivateSeedStrings());
+        result.push(this.testPublicIdentifierStrings());
 
         return result;
     }
@@ -43,7 +44,7 @@ class NyzoStringTest {
 
             // Check encoding against the expected encoded string.
             const encodedString = encodedStringForByteArray(byteArray);
-            if (string != encodedString) {
+            if (string != encodedString && successful) {
                 successful = false;
                 result = 'mismatch of expected string (' + string + ') and encoded string (' + encodedString +
                     ') in iteration ' + i + ' of NyzoStringTest.testEncoder()';
@@ -112,7 +113,7 @@ class NyzoStringTest {
 
             // Check encoding against the expected encoded string.
             const encodedString = nyzoStringFromPrivateKey(rawSeed);
-            if (nyzoString != encodedString) {
+            if (nyzoString != encodedString && successful) {
                 successful = false;
                 result = 'mismatch of expected Nyzo string (' + nyzoString + ') and encoded Nyzo string (' +
                     encodedString + ') in iteration ' + i + ' of NyzoStringTest.testPrivateSeedStrings()';
@@ -120,5 +121,67 @@ class NyzoStringTest {
         }
 
         return { name: 'NyzoStringTest.testPrivateSeedStrings()', result: result, successful: successful }
+    }
+
+    testPublicIdentifierStrings() {
+
+        const rawIdentifiers = [
+            'c34a6f1942cb7ec10d2a440b3e116041d05df2746ebe7b41802340a1495e7af5',  // Argo 746
+            'b5fd3e8d789a5055091e46db881f1b741b0ab6f8d65b21ae88cc543dfd92173b',  // Nyzo 0
+            '15fa0cd9b161953858d097090621a4de24063449b66d4dac2af90543389a9f89',  // Nyzo 1
+            '4ddefde6a0c5abf78868f2c13803f934c45a0f675f69fd750d6578046617eec5',  // Nyzo 2
+            '1459eed3a8d3bbf1d1faaf553f0860336615d10e0ebd44b5f8b5c94418457a43',  // Nyzo 3
+            '684d8b1bfedb0bb319954ba3e330d82577ed7ffa45fdf468cfe01accac6db89d',  // Nyzo 4
+            'e917bf3cf77b2c8e100a3715500397abcb89f99963a174e13c5b4e11cbb72852',  // Nyzo 5
+            'f83cf2e0e3abc5df01bddd67fead3099bff7efaf467010f53b654f293a9a9887',  // Nyzo 6
+            '363a10a67dfac9a2ac59dc7a1fd03e3705665f01560d399c78a367dc21ce94ce',  // Nyzo 7
+            'de2fd26165e1b774ce8da5365040fc60be84a2167e1d62e7f847b40fea05863a',  // Nyzo 8
+            '92a5849feebbb2e1fb64b6d93940bad36168ff0d4f984f1a7b64dc6fedc0dae5'   // Nyzo 9
+        ];
+        const nyzoStrings = [
+            'id__8cdasPC2QVZ13iG42RWhp47gow9SsIXZgp0Aga59oEITG2X-M7Ur',  // Argo 746
+            'id__8bo.fFTWDC1m2hX6UWxw6Vgs2IsWTCJyIFAcm3V.BytZgoahsDN5',  // Nyzo 0
+            'id__81oY3dDPpqkWnd2o2gpyGdWB1Ah9KDTdI2IX1kcWDG~9zSnx2qrV',  // Nyzo 1
+            'id__84Vv_vrxPrMVz6AQNjx3~jj4nx.EoUE.ugTCv0hD5~Z5p5hM3PFu',  // Nyzo 2
+            'id__81hqZKeFSZMPSwHMmj-8p3dD5u4e3IT4KwzTQkgphoG3ZTTQRQpV',  // Nyzo 3
+            'id__86ydzPM~UNLR6qmbF~cNU2mVZo_YhwVSrc_x6JQJsszua_S7524c',  // Nyzo 4
+            'id__8eBoMRRVvQQe40FV5m03CYMbzwDqpY5SWjPsjy7bKQyi07~ubwHD',  // Nyzo 5
+            'id__8fx--L3AH-ow0sVuq_YKc9D_.~~MhE0g.jKCjQBYDGz72811JoPW',  // Nyzo 6
+            'id__83pY4aq.~JDzI5Etvy_gfAt5qC-1mxSXE7zAq.NyRGjeRKZ72xT5',  // Nyzo 7
+            'id__8dWMSD5CWsuSRFUCdC10_62~ya8nwyTzX_y7K0_H1ppYBEsF1teA',  // Nyzo 8
+            'id__89aCy9_LLZby~UiUUjC0LKdyrf-djXyf6EKBV6_KNdICIpCfGqK3'   // Nyzo 9
+        ];
+
+        // Check decoding and encoding for all values.
+        let successful = true;
+        let result = 'successful';
+        for (let i = 0; i < rawIdentifiers.length && successful; i++) {
+
+            const rawIdentifier = hexStringAsUint8Array(rawIdentifiers[i]);
+            const nyzoString = nyzoStrings[i];
+
+            // Check decoding against the expected raw identifier.
+            const decodedIdentifier = decode(nyzoString);
+            if (decodedIdentifier == null) {
+                successful = false;
+                result = 'unable to decode Nyzo string (' + nyzoString + ') in iteration ' + i +
+                    ' of NyzoStringTest.testPublicIdentifierStrings()';
+            } else if (!arraysAreEqual(decodedIdentifier.getIdentifier(), rawIdentifier)) {
+                successful = false;
+                result = 'mismatch of expected raw identifier (' + uint8ArrayAsHexString(rawIdentifier) +
+                    ') and decoded identifier (' + uint8ArrayAsHexString(decodedIdentifier.getIdentifier()) +
+                    ') in iteration ' + i + ' of NyzoStringTest.testPublicIdentifierStrings()';
+            }
+
+            // Check encoding against the expected encoded string.
+            const encodedString = nyzoStringFromPublicIdentifier(rawIdentifier);
+            if (nyzoString != encodedString && successful) {
+                successful = false;
+                result = 'mismatch of expected Nyzo string (' + nyzoString + ') and encoded Nyzo string (' +
+                    encodedString + ') in iteration ' + i + ' of NyzoStringTest.testPublicIdentifierStrings()';
+            }
+        }
+
+        return { name: 'NyzoStringTest.testPublicIdentifierStrings()', result: result, successful: successful }
     }
 }
