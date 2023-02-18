@@ -23,12 +23,21 @@ function nyzo_render_settings_page() {
 
 function nyzo_register_settings() {
     register_setting('nyzo_plugin_options', 'nyzo_plugin_options', 'nyzo_plugin_options_validate');
-    add_settings_section('account_settings', 'Account Settings', 'nyzo_plugin_section_text', 'nyzo_plugin');
 
+    // Add the settings section.
+    add_settings_section('nyzo_settings', '', 'nyzo_plugin_section_text', 'nyzo_plugin');
+
+    // Add the receiver ID.
     add_settings_field('nyzo_plugin_setting_receiver_id', 'receiver ID', 'nyzo_plugin_setting_receiver_id',
-        'nyzo_plugin', 'account_settings');
+        'nyzo_plugin', 'nyzo_settings');
+
+    // Add the client endpoint.
     add_settings_field('nyzo_plugin_setting_client_endpoint', 'client endpoint', 'nyzo_plugin_setting_client_endpoint',
-        'nyzo_plugin', 'account_settings');
+        'nyzo_plugin', 'nyzo_settings');
+
+    // Add the tip-on-all-pages option.
+    add_settings_field('nyzo_plugin_setting_include_tip_on_all_pages', 'include tip element on all pages',
+        'nyzo_plugin_setting_include_tip_on_all_pages', 'nyzo_plugin', 'nyzo_settings');
 }
 add_action('admin_init', 'nyzo_register_settings');
 
@@ -55,6 +64,18 @@ function nyzo_plugin_setting_client_endpoint() {
     }
     echo '<input id="nyzo_plugin_setting_client_endpoint" name="nyzo_plugin_options[client_endpoint]" ' .
         'class="regular-text" type="text" value="' . esc_attr($clientEndpoint) . '" />';
+}
+
+function nyzo_plugin_setting_include_tip_on_all_pages() {
+    $options = get_option('nyzo_plugin_options');
+    try {
+        $includeTipOnAllPages = array_key_exists('include_tip_on_all_pages', $options);
+    } catch (Throwable $t) {
+        $includeTipOnAllPages = false;
+    }
+    echo '<input id="nyzo_plugin_setting_include_tip_on_all_pages" ' .
+        'name="nyzo_plugin_options[include_tip_on_all_pages]" type="checkbox" value="1" ' . ($includeTipOnAllPages ?
+            'checked' : '') . '/>';
 }
 
 function nyzo_plugin_options_validate($newValues) {
