@@ -4,9 +4,7 @@ if (!defined('__NYZO_EXTENSION_ROOT__')) { define('__NYZO_EXTENSION_ROOT__', dir
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringEncoder.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringPublicIdentifier.php');
 
-add_shortcode('nyzo_tip', 'nyzoTipShortcode');
-
-function nyzoTipShortcode() {
+function nyzoTipElement() {
     // Get the receiver identifier.
     $options = get_option('nyzo_plugin_options');
     try {
@@ -34,7 +32,7 @@ function nyzoTipShortcode() {
     // endpoint.
     if (!filter_var($clientEndpoint, FILTER_VALIDATE_URL) || (strcmp($scheme, 'http') && strcmp($scheme, 'https'))) {
         error_log('Nyzo client endpoint is invalid; using default');
-        $clientEndpoint = 'https://client.nyzo.co/api/forwardTransaction';;
+        $clientEndpoint = 'https://client.nyzo.co/api/forwardTransaction';
     }
 
     return '<div class="nyzo-tip-button nyzo-extension-not-installed" ' .

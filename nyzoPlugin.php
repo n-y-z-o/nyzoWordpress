@@ -12,13 +12,24 @@ License: The Unlicense
 error_log('loading Nyzo plugin');
 
 define('NYZO__PLUGIN_DIRECTORY', plugin_dir_path( __FILE__ ));
-require_once(NYZO__PLUGIN_DIRECTORY . 'settings.php');
-require_once(NYZO__PLUGIN_DIRECTORY . 'shortcodes.php');
+require_once(NYZO__PLUGIN_DIRECTORY . 'nyzoSettings.php');
+require_once(NYZO__PLUGIN_DIRECTORY . 'nyzoShortcodes.php');
 
-function nyzo_content_filter($content) {
-     return $content . '<p class="nyzo-notice">Nyzo plugin installed and activated</p>';
+function nyzo_add_tip_element() {
+
+     // Get the option for including the tip element on all pages.
+     $options = get_option('nyzo_plugin_options');
+     try {
+         $includeTipOnAllPages = array_key_exists('include_tip_on_all_pages', $options);
+     } catch (Throwable $t) {
+         $includeTipOnAllPages = false;
+     }
+
+     if (!is_admin() && $includeTipOnAllPages) {
+         echo nyzoTipElement() . ' (included with plugin option)';
+     }
 }
-add_filter('the_content', 'nyzo_content_filter');
+add_action('wp_footer', 'nyzo_add_tip_element');
 
 function nyzo_enqueue_styles() {
     wp_enqueue_style('nyzo_style', plugins_url('css/nyzo.css', __FILE__));
