@@ -38,6 +38,10 @@ function nyzo_register_settings() {
     // Add the tip-on-all-pages option.
     add_settings_field('nyzo_plugin_setting_include_tip_on_all_pages', 'include tip element on all pages',
         'nyzo_plugin_setting_include_tip_on_all_pages', 'nyzo_plugin', 'nyzo_settings');
+
+    // Add the tip-style option.
+    add_settings_field('nyzo_plugin_setting_tip_element_style', 'tip-element style',
+        'nyzo_plugin_setting_tip_element_style', 'nyzo_plugin', 'nyzo_settings');
 }
 add_action('admin_init', 'nyzo_register_settings');
 
@@ -76,6 +80,23 @@ function nyzo_plugin_setting_include_tip_on_all_pages() {
     echo '<input id="nyzo_plugin_setting_include_tip_on_all_pages" ' .
         'name="nyzo_plugin_options[include_tip_on_all_pages]" type="checkbox" value="1" ' . ($includeTipOnAllPages ?
             'checked' : '') . '/>';
+}
+
+function nyzo_plugin_setting_tip_element_style() {
+    $options = get_option('nyzo_plugin_options');
+    $selectValues = ['hidden', 'small', 'large'];
+    try {
+        $style = $options['tip_element_style'];
+    } catch (Throwable $t) {
+        $style = 'hidden';
+    }
+
+    echo '<select id="nyzo_plugin_setting_tip_element_style" name="nyzo_plugin_options[tip_element_style]">';
+    for ($i = 0; $i < count($selectValues); $i++) {
+        echo '<option value="' . $selectValues[$i] .'"' . ($style == $selectValues[$i] ? ' selected' : '')  . '>' .
+            $selectValues[$i] . '</option>';
+    }
+    echo '</select>';
 }
 
 function nyzo_plugin_options_validate($newValues) {
