@@ -8,5 +8,5 @@ require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoTip.php');
 add_shortcode('nyzo_tip', 'nyzoTipShortcode');
 
 function nyzoTipShortcode() {
-    return nyzoTipElement() . ' (included with shortcode)';
+    return nyzoTipElement('included with shortcode');
 }

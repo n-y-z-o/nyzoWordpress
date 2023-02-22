@@ -8,3 +8,35 @@
     border-radius: 0.5rem;
     margin: 0.2rem 0.5rem;
 }
+
+.nyzo-tip-element-small {
+    width: 100%;
+    text-align: center;
+}
+
+.nyzo-tip-element-small > img {
+    max-width: 7rem;
+}
+
+.nyzo-tip-element-small > p {
+    font-size: 0.7rem;
+    font-style: italic;
+    padding: 0;
+    margin: 0;
+}
+
+.nyzo-tip-element-large {
+    width: 100%;
+    text-align: center;
+}
+
+.nyzo-tip-element-large > img {
+    max-width: 10rem;
+}
+
+.nyzo-tip-element-large > p {
+    font-size: 0.7rem;
+    font-style: italic;
+    padding: 0;
+    margin: 0;
+}

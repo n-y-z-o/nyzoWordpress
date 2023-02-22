@@ -1,10 +1,10 @@
 <?php
 
-if (!defined('__NYZO_EXTENSION_ROOT__')) { define('__NYZO_EXTENSION_ROOT__', dirname(__FILE__)); }
+if (!defined('__NYZO_EXTENSION_ROOT__')) { define('__NYZO_EXTENSION_ROOT__', dirname(dirname(__FILE__))); }
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringEncoder.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringPublicIdentifier.php');
 
-function nyzoTipElement() {
+function nyzoTipElement($debugTag) {
     // Get the receiver identifier.
     $options = get_option('nyzo_plugin_options');
     try {
@@ -35,10 +35,27 @@ function nyzoTipElement() {
         $clientEndpoint = 'https://client.nyzo.co/api/forwardTransaction';
     }
 
-    return '<div class="nyzo-tip-button nyzo-extension-not-installed" ' .
-        'data-client-url="' . $clientEndpoint . '" ' .
+    // Get the tip element style.
+    $style = $options['tip_element_style'];
+
+    // Assemble the result.
+    $result = '<div class="nyzo-tip-button nyzo-extension-not-installed ';
+    if ($style == 'large' || $style === 'small') {
+        $result .= 'nyzo-tip-element-' . $style;
+    }
+    $result .= '" ';
+
+    $result .= 'data-client-url="' . $clientEndpoint . '" ' .
         'data-receiver-id="' . $receiverId . '" ' .
-        'data-tag="tip">' .
-        'This is the Nyzo tip element' .
-        '</div>';
+        'data-tag="tip">';
+
+    if ($style == 'large' || $style === 'small') {
+        $result .= '<img src="' . plugins_url('images/nyzo-tip-button.png', dirname(__FILE__)) .
+            '" class="nyzo-tip-element-' . $style . '" >';
+        $result .= '<p>' . $debugTag . '</p>';
+    }
+
+    $result .= '</div>';
+
+    return $result;
 }

@@ -26,7 +26,7 @@ function nyzo_add_tip_element() {
      }
 
      if (!is_admin() && $includeTipOnAllPages) {
-         echo nyzoTipElement() . ' (included with plugin option)';
+         echo nyzoTipElement('included with plugin option');
      }
 }
 add_action('wp_footer', 'nyzo_add_tip_element');
@@ -34,7 +34,7 @@ add_action('wp_footer', 'nyzo_add_tip_element');
 function nyzo_enqueue_styles() {
     wp_enqueue_style('nyzo_style', plugins_url('css/nyzo.css', __FILE__));
 }
-add_action('wp_enqueue_styles', 'nyzo_enqueue_styles');
+add_action('wp_enqueue_scripts', 'nyzo_enqueue_styles');
 
 function nyzo_enqueue_scripts() {
     wp_enqueue_script('nyzo_nacl', plugins_url('javascript/nacl.min.js', __FILE__));
