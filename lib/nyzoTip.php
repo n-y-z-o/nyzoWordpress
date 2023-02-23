@@ -4,7 +4,7 @@ if (!defined('__NYZO_EXTENSION_ROOT__')) { define('__NYZO_EXTENSION_ROOT__', dir
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringEncoder.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringPublicIdentifier.php');
 
-function nyzoTipElement($debugTag) {
+function nyzoTipElement($style, $debugTag) {
     // Get the receiver identifier.
     $options = get_option('nyzo_plugin_options');
     try {
@@ -34,9 +34,6 @@ function nyzoTipElement($debugTag) {
         error_log('Nyzo client endpoint is invalid; using default');
         $clientEndpoint = 'https://client.nyzo.co/api/forwardTransaction';
     }
-
-    // Get the tip element style.
-    $style = $options['tip_element_style'];
 
     // Assemble the result.
     $result = '<div class="nyzo-tip-button nyzo-extension-not-installed ';

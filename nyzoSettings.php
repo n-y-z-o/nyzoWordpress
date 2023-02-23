@@ -35,13 +35,9 @@ function nyzo_register_settings() {
     add_settings_field('nyzo_plugin_setting_client_endpoint', 'client endpoint', 'nyzo_plugin_setting_client_endpoint',
         'nyzo_plugin', 'nyzo_settings');
 
-    // Add the tip-on-all-pages option.
-    add_settings_field('nyzo_plugin_setting_include_tip_on_all_pages', 'include tip element on all pages',
-        'nyzo_plugin_setting_include_tip_on_all_pages', 'nyzo_plugin', 'nyzo_settings');
-
-    // Add the tip-style option.
-    add_settings_field('nyzo_plugin_setting_tip_element_style', 'tip-element style',
-        'nyzo_plugin_setting_tip_element_style', 'nyzo_plugin', 'nyzo_settings');
+    // Add the automatic tip element option.
+    add_settings_field('nyzo_plugin_setting_automatic_tip_element', 'automatic tip element on all pages',
+        'nyzo_plugin_setting_automatic_tip_element', 'nyzo_plugin', 'nyzo_settings');
 }
 add_action('admin_init', 'nyzo_register_settings');
 
@@ -70,28 +66,16 @@ function nyzo_plugin_setting_client_endpoint() {
         'class="regular-text" type="text" value="' . esc_attr($clientEndpoint) . '" />';
 }
 
-function nyzo_plugin_setting_include_tip_on_all_pages() {
+function nyzo_plugin_setting_automatic_tip_element() {
     $options = get_option('nyzo_plugin_options');
+    $selectValues = ['none', 'hidden', 'small', 'large'];
     try {
-        $includeTipOnAllPages = array_key_exists('include_tip_on_all_pages', $options);
+        $style = $options['automatic_tip_element'];
     } catch (Throwable $t) {
-        $includeTipOnAllPages = false;
-    }
-    echo '<input id="nyzo_plugin_setting_include_tip_on_all_pages" ' .
-        'name="nyzo_plugin_options[include_tip_on_all_pages]" type="checkbox" value="1" ' . ($includeTipOnAllPages ?
-            'checked' : '') . '/>';
-}
-
-function nyzo_plugin_setting_tip_element_style() {
-    $options = get_option('nyzo_plugin_options');
-    $selectValues = ['hidden', 'small', 'large'];
-    try {
-        $style = $options['tip_element_style'];
-    } catch (Throwable $t) {
-        $style = 'hidden';
+        $style = 'none';
     }
 
-    echo '<select id="nyzo_plugin_setting_tip_element_style" name="nyzo_plugin_options[tip_element_style]">';
+    echo '<select id="nyzo_plugin_setting_automatic_tip_element" name="nyzo_plugin_options[automatic_tip_element]">';
     for ($i = 0; $i < count($selectValues); $i++) {
         echo '<option value="' . $selectValues[$i] .'"' . ($style == $selectValues[$i] ? ' selected' : '')  . '>' .
             $selectValues[$i] . '</option>';

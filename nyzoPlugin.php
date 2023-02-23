@@ -19,14 +19,14 @@ function nyzo_add_tip_element() {
 
      // Get the option for including the tip element on all pages.
      $options = get_option('nyzo_plugin_options');
+     $automatic_tip_element_style = 'none';
      try {
-         $includeTipOnAllPages = array_key_exists('include_tip_on_all_pages', $options);
-     } catch (Throwable $t) {
-         $includeTipOnAllPages = false;
-     }
+         $automatic_tip_element_style = $options['automatic_tip_element'];
+     } catch (Throwable $t) { }
 
-     if (!is_admin() && $includeTipOnAllPages) {
-         echo nyzoTipElement('included with plugin option');
+     if (!is_admin() && ($automatic_tip_element_style === 'hidden' || $automatic_tip_element_style === 'small' ||
+         $automatic_tip_element_style === 'large')) {
+         echo nyzoTipElement($automatic_tip_element_style, 'included with plugin option');
      }
 }
 add_action('wp_footer', 'nyzo_add_tip_element');
