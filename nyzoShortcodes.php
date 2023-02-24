@@ -5,8 +5,23 @@ require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringEncoder.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoStringPublicIdentifier.php');
 require_once(__NYZO_EXTENSION_ROOT__ . '/lib/nyzoTip.php');
 
-add_shortcode('nyzo_tip', 'nyzoTipShortcode');
+add_shortcode('nyzo_tip', 'nyzoTipShortcodeDefault');
+add_shortcode('nyzo_tip_hidden', 'nyzoTipShortcodeHidden');
+add_shortcode('nyzo_tip_small', 'nyzoTipShortcodeSmall');
+add_shortcode('nyzo_tip_large', 'nyzoTipShortcodeLarge');
 
-function nyzoTipShortcode() {
-    return nyzoTipElement('hidden', 'included with shortcode');
+function nyzoTipShortcodeDefault() {
+    return nyzoTipElement('hidden', 'shortcode nyzo_tip');
+}
+
+function nyzoTipShortcodeHidden() {
+    return nyzoTipElement('hidden', 'shortcode nyzo_tip_hidden');
+}
+
+function nyzoTipShortcodeSmall() {
+    return nyzoTipElement('small', 'shortcode nyzo_tip_small');
+}
+
+function nyzoTipShortcodeLarge() {
+    return nyzoTipElement('large', 'shortcode nyzo_tip_large');
 }
