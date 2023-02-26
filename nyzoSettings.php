@@ -38,6 +38,10 @@ function nyzo_register_settings() {
     // Add the automatic tip element option.
     add_settings_field('nyzo_plugin_setting_automatic_tip_element', 'automatic tip element on all pages',
         'nyzo_plugin_setting_automatic_tip_element', 'nyzo_plugin', 'nyzo_settings');
+
+    // Add the default shortcode tip element option.
+    add_settings_field('nyzo_plugin_setting_default_shortcode_tip_element', 'default shortcode tip element',
+        'nyzo_plugin_setting_default_shortcode_tip_element', 'nyzo_plugin', 'nyzo_settings');
 }
 add_action('admin_init', 'nyzo_register_settings');
 
@@ -76,6 +80,24 @@ function nyzo_plugin_setting_automatic_tip_element() {
     }
 
     echo '<select id="nyzo_plugin_setting_automatic_tip_element" name="nyzo_plugin_options[automatic_tip_element]">';
+    for ($i = 0; $i < count($selectValues); $i++) {
+        echo '<option value="' . $selectValues[$i] .'"' . ($style == $selectValues[$i] ? ' selected' : '')  . '>' .
+            $selectValues[$i] . '</option>';
+    }
+    echo '</select>';
+}
+
+function nyzo_plugin_setting_default_shortcode_tip_element() {
+    $options = get_option('nyzo_plugin_options');
+    $selectValues = ['hidden', 'small', 'large'];
+    try {
+        $style = $options['default_shortcode_tip_element'];
+    } catch (Throwable $t) {
+        $style = 'hidden';
+    }
+
+    echo '<select id="nyzo_plugin_setting_default_shortcode_tip_element" ';
+    echo 'name="nyzo_plugin_options[default_shortcode_tip_element]">';
     for ($i = 0; $i < count($selectValues); $i++) {
         echo '<option value="' . $selectValues[$i] .'"' . ($style == $selectValues[$i] ? ' selected' : '')  . '>' .
             $selectValues[$i] . '</option>';

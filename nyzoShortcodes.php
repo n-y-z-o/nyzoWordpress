@@ -11,7 +11,14 @@ add_shortcode('nyzo_tip_small', 'nyzoTipShortcodeSmall');
 add_shortcode('nyzo_tip_large', 'nyzoTipShortcodeLarge');
 
 function nyzoTipShortcodeDefault() {
-    return nyzoTipElement('hidden', 'shortcode nyzo_tip');
+    $options = get_option('nyzo_plugin_options');
+    try {
+        $style = $options['default_shortcode_tip_element'];
+    } catch (Throwable $t) {
+        $style = 'hidden';
+    }
+    error_log('style is ' . $style);
+    return nyzoTipElement($style, 'shortcode nyzo_tip');
 }
 
 function nyzoTipShortcodeHidden() {
