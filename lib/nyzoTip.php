@@ -26,7 +26,6 @@ function nyzoTipElement($style, $debugTag) {
     } catch (Throwable $t) {
         $scheme = '';
     }
-    error_log('scheme: ' . $scheme);
 
     // If the client endpoint is not a valid URL, or if the client scheme is not http or https, use the default
     // endpoint.

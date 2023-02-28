@@ -17,7 +17,6 @@ function nyzoTipShortcodeDefault() {
     } catch (Throwable $t) {
         $style = 'hidden';
     }
-    error_log('style is ' . $style);
     return nyzoTipElement($style, 'shortcode nyzo_tip');
 }
 

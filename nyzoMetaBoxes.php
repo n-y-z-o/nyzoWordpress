@@ -14,13 +14,17 @@ function nyzo_meta_boxes() {
 }
 add_action('add_meta_boxes', 'nyzo_meta_boxes');
 
-function nyzo_meta_boxes_elements() {
+function nyzo_meta_boxes_elements($post) {
 
-    wp_nonce_field(plugin_basename(__FILE__), 'nyzo_nonce');
+    wp_nonce_field('nyzo_post_meta', 'nyzo_nonce');
 
     echo '<div class="components-panel__row">';
     echo '<div class="components-base-control components-checkbox-control">';
-    echo '<input id="nyzo_monetize_with_micropay" name="nyzo_monetize_with_micropay" type="checkbox" value="1" />';
+    echo '<input id="nyzo_monetize_with_micropay" name="nyzo_monetize_with_micropay" type="checkbox" value="1" ';
+    if (get_post_meta($post->ID, 'nyzo_monetize_with_micropay', true) === '1') {
+        echo 'checked';
+    }
+    echo '/>';
     echo '<label for="nyzo_monetize_with_micropay">Monetize with Micropay</label>';
     echo '</div>';
     echo '</div>';
@@ -32,3 +36,17 @@ function nyzo_meta_boxes_elements() {
     echo '</div>';
     echo '</div>';
 }
+
+function nyzo_save_metadata($post_id) {
+
+    if (isset($_POST['nyzo_nonce']) && wp_verify_nonce($_POST['nyzo_nonce'], 'nyzo_post_meta') &&
+        current_user_can('edit_post', $post_id)) {
+
+        if (isset($_POST['nyzo_monetize_with_micropay'])) {
+            update_post_meta($post_id, 'nyzo_monetize_with_micropay', '1');
+        } else {
+            delete_post_meta($post_id, 'nyzo_monetize_with_micropay');
+        }
+    }
+}
+add_action('save_post', 'nyzo_save_metadata');
